@@ -1,15 +1,8 @@
-aniso8601
-click==7.1.2
-colorama
 Flask
 Flask-JWT
 Flask-RESTful
 Flask-SQLAlchemy
-greenlet
-itsdangerous
-Jinja2==3.0
-MarkupSafe
-pytz
-six
 SQLAlchemy
 Werkzeug
+uwsgi
+psycopg2
