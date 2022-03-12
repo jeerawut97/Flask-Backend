@@ -1,5 +1,5 @@
 aniso8601==9.0.1
-click==8.0.4
+click
 colorama==0.4.4
 Flask==2.0.3
 Flask-JWT==0.3.2
