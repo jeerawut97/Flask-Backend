@@ -9,7 +9,7 @@ greenlet
 itsdangerous
 Jinja2
 MarkupSafe
-PyJWT
+PyJWT==1.4.0
 pytz
 six
 SQLAlchemy
