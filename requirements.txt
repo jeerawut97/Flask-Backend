@@ -9,10 +9,7 @@ greenlet
 itsdangerous
 Jinja2
 MarkupSafe
-PyJWT==1.4.0
 pytz
 six
 SQLAlchemy
 Werkzeug
-uwsgi
-psycopg2
