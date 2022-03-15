@@ -4,7 +4,7 @@ from flask_jwt import JWT
 from datetime import timedelta
 
 from security import authenticate, identity
-from resources.user import UserRegister
+from resources.user import UserRegister, User
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 import os, re
@@ -19,6 +19,7 @@ if uri.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = uri
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_AUTH_URL_RULE'] = '/login'
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
 # app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
@@ -33,6 +34,7 @@ api.add_resource(Store, '/store/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(StoreList, '/stores')
 api.add_resource(UserRegister, '/register')
+api.add_resource(User, '/user/<int:user_id>')
 
 if __name__ == '__main__':
     from db import db
