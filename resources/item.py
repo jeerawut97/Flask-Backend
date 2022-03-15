@@ -58,6 +58,7 @@ class Item(Resource):
 
         if item:
             item.price = data['price']
+            item.store_id = data['store_id']
         else:
             item = ItemModel(name, **data)
 
