@@ -37,9 +37,9 @@ def add_claims_to_jwt(identity):
         return {'is_admin':True}
     return {'is_admin':False}
 
-@jwt.token_in_blocklist_loader
-def check_if_token_in_blacklist(decrpted_token):
-    return decrpted_token['identity'] in BLACKLIST
+# @jwt.token_in_blocklist_loader
+# def check_if_token_in_blacklist(decrpted_token):
+#     return decrpted_token['identity'] in BLACKLIST
 
 @jwt.expired_token_loader
 def expired_token_callback():
@@ -69,7 +69,7 @@ api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(TokenRefresh, '/refresh')
-api.add_resource(UserLogout, '/logout')
+# api.add_resource(UserLogout, '/logout')
 
 
 if __name__ == '__main__':
