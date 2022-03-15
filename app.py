@@ -28,6 +28,12 @@ jwt = JWTManager(app)
 # def customized_response_handler(access_token, identity):
 #     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
 
+@jwt.additional_claims_loader
+def add_claims_to_jwt(identity):
+    if identity == 1:
+        return {'is_admin':True}
+    return {'is_admin':False}
+
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(ItemList, '/items')
