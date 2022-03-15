@@ -14,8 +14,6 @@ class UserRegister(Resource):
                         required=True,
                         help="This field cannot be blank."
                         )
-
-    @jwt_required()
     def post(self):
         data = UserRegister.parser.parse_args()
 
