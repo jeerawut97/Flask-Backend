@@ -1,9 +1,9 @@
 from flask import Flask, jsonify
 from flask_restful import Api
-from flask_jwt import JWT
+from flask_jwt_extended import JWTManager
 from datetime import timedelta
 
-from security import authenticate, identity
+# from security import authenticate, identity
 from resources.user import UserRegister, User
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
@@ -24,7 +24,7 @@ app.config['JWT_AUTH_URL_RULE'] = '/login'
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
 # app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
 
-jwt = JWT(app, authenticate, identity)
+jwt = JWTManager(app)
 @jwt.auth_response_handler
 def customized_response_handler(access_token, identity):
     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
