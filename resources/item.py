@@ -22,7 +22,7 @@ class Item(Resource):
             return item.json()
         return {'message': 'Item not found'}, 404
 
-    @jwt_required()
+    @jwt_required(fresh=True)
     def post(self, name):
         if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400
@@ -65,8 +65,14 @@ class Item(Resource):
 
         return item.json()
 
-
 class ItemList(Resource):
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self):
-        return {'items': [x.json() for x in ItemModel.find_all()]}
+        user_id = get_jwt()
+        items = [item.json for item in ItemModel.find_all()]
+        if user_id:
+            return {'items':items}, 200
+        return {
+            'items': [item['name'] for item in ItemModel.find_all()],
+            'message': 'More data available if you log in.'
+        }, 200
