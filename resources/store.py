@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from models.store import StoreModel
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt
 
 class Store(Resource):
     @jwt_required()
@@ -31,8 +31,14 @@ class Store(Resource):
 
         return {'message': 'Store deleted'}
 
-
 class StoreList(Resource):
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self):
-        return {'stores': [x.json() for x in StoreModel.find_all()]}
+        user_id = get_jwt()
+        items = [item.json() for item in StoreModel.find_all()]
+        if user_id:
+            return {'stores':items}, 200
+        return {
+            'items': [item['name'] for item in StoreModel.find_all()],
+            'message': 'More data available if you log in.'
+        }, 200
