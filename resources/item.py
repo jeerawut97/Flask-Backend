@@ -69,7 +69,7 @@ class ItemList(Resource):
     @jwt_required(optional=True)
     def get(self):
         user_id = get_jwt()
-        items = [item.json for item in ItemModel.find_all()]
+        items = [item.json() for item in ItemModel.find_all()]
         if user_id:
             return {'items':items}, 200
         return {
