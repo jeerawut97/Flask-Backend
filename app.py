@@ -25,9 +25,9 @@ app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
 # app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
 
 jwt = JWTManager(app)
-@jwt.auth_response_handler
-def customized_response_handler(access_token, identity):
-    return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
+# @jwt.auth_response_handler
+# def customized_response_handler(access_token, identity):
+#     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
 
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(Store, '/store/<string:name>')
