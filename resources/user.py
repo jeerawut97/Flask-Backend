@@ -17,7 +17,7 @@ _user_parser.add_argument('password',
 
 class UserRegister(Resource):
     def post(self):
-        data = _user_parser.parser.parse_args()
+        data = _user_parser.parse_args()
 
         if UserModel.find_by_username(data['username']):
             return {"message": "A user with that username already exists"}, 400
@@ -44,20 +44,9 @@ class User(Resource):
         return {'message':'User deleted.'}, 200
 
 class UserLogin(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('username',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('password',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
     @classmethod
     def post(cls):
-        data = _user_parser.parser.parse_args()
+        data = _user_parser.parse_args()
         user = UserModel.find_by_username(data['username'])
         if user and safe_str_cmp(user.password, data['password']):
             access_token = create_access_token(identity=user.id, fresh=True)
