@@ -4,9 +4,10 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 
 # from security import authenticate, identity
-from resources.user import UserRegister, User, UserLogin, TokenRefresh
+from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
+from blacklist import BLACKLIST
 import os, re
 
 app = Flask(__name__)
@@ -15,9 +16,11 @@ uri = os.getenv("DATABASE_URL")
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = uri
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 # app.config['JWT_AUTH_URL_RULE'] = '/login'
 # app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
 # app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
@@ -33,6 +36,10 @@ def add_claims_to_jwt(identity):
     if identity == 1:
         return {'is_admin':True}
     return {'is_admin':False}
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(decrpted_token):
+    return decrpted_token['identity'] in BLACKLIST
 
 @jwt.expired_token_loader
 def expired_token_callback():
@@ -62,6 +69,7 @@ api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(TokenRefresh, '/refresh')
+api.add_resource(UserLogout, '/logout')
 
 
 if __name__ == '__main__':

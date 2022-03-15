@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.user import UserModel
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt
+from blacklist import BLACKLIST
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('username',
@@ -56,6 +57,13 @@ class UserLogin(Resource):
                 'refersh_token' : refersh_token
             }, 200
         return {'message':'Invalid credentials'}, 401
+
+class UserLogout(Resource):
+    @jwt_required()
+    def post(self):
+        jwi = get_jwt()['jti']
+        BLACKLIST.add(jwi)
+        return {'message':'Successfully logged out.'}, 200
 
 class TokenRefresh(Resource):
     @jwt_required(refresh=True)
