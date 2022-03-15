@@ -44,7 +44,8 @@ class User(Resource):
         return {'message':'User deleted.'}, 200
 
 class UserLogin(Resource):
-    def post(self):
+    @classmethod
+    def post(cls):
         data = _user_parser.parse_args()
         user = UserModel.find_by_username(data['username'])
         if user and safe_str_cmp(user.password, data['password']):
