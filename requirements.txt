@@ -5,3 +5,4 @@ SQLAlchemy
 Werkzeug
 uwsgi
 psycopg2
+redis

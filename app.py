@@ -8,7 +8,7 @@ from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogo
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from blacklist import BLACKLIST
-import os, re
+import os, redis
 
 app = Flask(__name__)
 app.secret_key = 'jose'
@@ -30,6 +30,9 @@ jwt = JWTManager(app)
 # @jwt.auth_response_handler
 # def customized_response_handler(access_token, identity):
 #     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
+jwt_redis_blocklist = redis.StrictRedis(
+    host="localhost", port=6379, db=0, decode_responses=True
+)
 
 @jwt.additional_claims_loader
 def add_claims_to_jwt(identity):
@@ -37,9 +40,13 @@ def add_claims_to_jwt(identity):
         return {'is_admin':True}
     return {'is_admin':False}
 
-# @jwt.token_in_blocklist_loader
-# def check_if_token_in_blacklist(decrpted_token):
-#     return decrpted_token['identity'] in BLACKLIST
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    token_in_redis = jwt_redis_blocklist.get(jti)
+    return token_in_redis in BLACKLIST
+    # return token_in_redis is not None
+    # return decrpted_token['identity'] in BLACKLIST
 
 @jwt.expired_token_loader
 def expired_token_callback():
@@ -69,7 +76,7 @@ api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(TokenRefresh, '/refresh')
-# api.add_resource(UserLogout, '/logout')
+api.add_resource(UserLogout, '/logout')
 
 
 if __name__ == '__main__':
