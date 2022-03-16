@@ -45,7 +45,9 @@ def add_claims_to_jwt(identity):
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    print(jwt_payload)
     jti = jwt_payload["jti"]
+    print(jti)
     # token_in_redis = jwt_redis_blocklist.get(jti)
     return jti in BLACKLIST
     # return token_in_redis is not None
