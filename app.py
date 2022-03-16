@@ -31,11 +31,11 @@ jwt = JWTManager(app)
 # def customized_response_handler(access_token, identity):
 #     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
 # addr_host = socket.gethostbyname(socket.getfqdn())
-addr_host = '159.65.15.54'
+# addr_host = '159.65.15.54'
 running_port = 5000
-jwt_redis_blocklist = redis.StrictRedis(
-    host="{}".format(addr_host), port=running_port, db=0, decode_responses=True
-)
+# jwt_redis_blocklist = redis.StrictRedis(
+#     host="{}".format(addr_host), port=running_port, db=0, decode_responses=True
+# )
 
 @jwt.additional_claims_loader
 def add_claims_to_jwt(identity):
@@ -46,8 +46,8 @@ def add_claims_to_jwt(identity):
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blacklist(jwt_header, jwt_payload):
     jti = jwt_payload["jti"]
-    token_in_redis = jwt_redis_blocklist.get(jti)
-    return token_in_redis in BLACKLIST
+    # token_in_redis = jwt_redis_blocklist.get(jti)
+    return jti in BLACKLIST
     # return token_in_redis is not None
     # return decrpted_token['identity'] in BLACKLIST
 
