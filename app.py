@@ -31,7 +31,7 @@ jwt = JWTManager(app)
 # def customized_response_handler(access_token, identity):
 #     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
 jwt_redis_blocklist = redis.StrictRedis(
-    host="localhost", port=6379, db=0, decode_responses=True
+    host="localhost", port=5000, db=0, decode_responses=True
 )
 
 @jwt.additional_claims_loader
