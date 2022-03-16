@@ -1,6 +1,7 @@
 Flask_JWT_Extended
 Flask-RESTful
 Flask-SQLAlchemy
+Flask-Marshmallow
 SQLAlchemy
 Werkzeug
 uwsgi

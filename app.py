@@ -1,10 +1,12 @@
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from marshmallow import ValidationError
 from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from blacklist import BLACKLIST
+from ma import ma
 import os, redis, socket
 
 app = Flask(__name__)
@@ -18,6 +20,10 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 api = Api(app)
+
+@app.errorhandler(ValidationError)
+def handle_marshmallow_validation(err):
+    return jsonify(err.messages), 400
 
 jwt = JWTManager(app)
 running_port = 5000
@@ -65,6 +71,6 @@ api.add_resource(UserLogout, '/logout')
 
 
 if __name__ == '__main__':
-    from db import db
-    db.init_app(app)
+    # from db import db
+    ma.init_app(app)
     app.run(port=running_port, debug=True)
