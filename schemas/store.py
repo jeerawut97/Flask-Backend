@@ -3,7 +3,7 @@ from models.item import ItemModel
 from models.store import StoreModel
 from schemas.item import ItemSchema
 
-class StoreSchema(ma.ModelSchema):
+class StoreSchema(ma):
     items = ma.Nested(ItemSchema, many=True)
     class Meta:
         model = ItemModel
