@@ -1,4 +1,4 @@
-# from flask_marshmallow import Marshmallow
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from flask_marshmallow import Marshmallow
+# from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-ma = SQLAlchemyAutoSchema()
+ma = Marshmallow()
