@@ -8,7 +8,7 @@ from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogo
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from blacklist import BLACKLIST
-import os, redis
+import os, redis, socket
 
 app = Flask(__name__)
 app.secret_key = 'jose'
@@ -30,8 +30,10 @@ jwt = JWTManager(app)
 # @jwt.auth_response_handler
 # def customized_response_handler(access_token, identity):
 #     return jsonify({'access_token': access_token.decode('utf-8'),'user_id': identity.id})
+addr_host = socket.gethostbyname(socket.getfqdn())
+runnung_port = 500
 jwt_redis_blocklist = redis.StrictRedis(
-    host="localhost", port=5000, db=0, decode_responses=True
+    host="{}".format(addr_host), port=runnung_port, db=0, decode_responses=True
 )
 
 @jwt.additional_claims_loader
@@ -82,4 +84,4 @@ api.add_resource(UserLogout, '/logout')
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-    app.run(port=5000, debug=True)
+    app.run(port=runnung_port, debug=True)
