@@ -17,7 +17,8 @@ _user_parser.add_argument('password',
                     )
 
 class UserRegister(Resource):
-    def post(self):
+    @classmethod
+    def post(cls):
         data = _user_parser.parse_args()
 
         if UserModel.find_by_username(data['username']):
@@ -30,14 +31,20 @@ class UserRegister(Resource):
 
 class User(Resource):
     @classmethod
-    def get(cls, user_id):
+    @jwt_required()
+    def get(cls, user_id:int):
         user = UserModel.find_by_id(user_id)
         if not user:
             return {'message':'User not found'}, 404
         return user.json()
 
     @classmethod
-    def delete(cls, user_id):
+    @jwt_required()
+    def delete(cls, user_id:int):
+        claims = get_jwt()
+        if not claims['is_admin']:
+            return {'message':'Admin privilege required.'}, 401
+
         user = UserModel.find_by_id(user_id)
         if not user:
             return {'message':'User not found'}, 404
@@ -59,15 +66,17 @@ class UserLogin(Resource):
         return {'message':'Invalid credentials'}, 401
 
 class UserLogout(Resource):
+    @classmethod
     @jwt_required()
-    def post(self):
+    def post(cls):
         jwi = get_jwt()['jti']
         BLACKLIST.add(jwi)
         return {'message':'Successfully logged out.'}, 200
 
 class TokenRefresh(Resource):
+    @classmethod
     @jwt_required(refresh=True)
-    def post(self):
+    def post(cls):
         current_user = get_jwt()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token':new_token}, 200
